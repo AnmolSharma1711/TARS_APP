@@ -6,6 +6,34 @@ from django.utils import timezone
 
 
 @api_view(['GET'])
+def root(request):
+    """
+    Root endpoint - API welcome message
+    """
+    return Response({
+        'message': 'Welcome to TARS Club API',
+        'version': '1.0.0',
+        'endpoints': {
+            'health': '/api/health/',
+            'info': '/api/info/',
+            'home': '/api/home/',
+            'admin': '/admin/',
+            'auth': {
+                'register': '/api/auth/register/',
+                'login': '/api/auth/login/',
+                'logout': '/api/auth/logout/',
+                'profile': '/api/auth/profile/',
+            },
+            'data': {
+                'site_settings': '/api/site-settings/',
+                'sponsors': '/api/sponsors/',
+                'social_links': '/api/social-links/',
+            }
+        }
+    })
+
+
+@api_view(['GET'])
 def health_check(request):
     """
     Health check endpoint that verifies:

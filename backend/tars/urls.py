@@ -37,6 +37,9 @@ admin.site.site_title = "TARS Admin Portal"
 admin.site.index_title = "Welcome to TARS Club Management"
 
 urlpatterns = [
+    # Root endpoint
+    path("", views.root, name="root"),
+    
     # Admin
     path("admin/", admin.site.urls),
     
