@@ -3,6 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import { api } from '../services/api'
 import './Home.css'
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
+const resolveMediaUrl = (value?: string) => {
+  if (!value) return undefined
+  if (/^https?:\/\//i.test(value)) return value
+  return `${API_BASE_URL}${value}`
+}
+
 interface SiteSettings {
   id: number
   club_name: string
@@ -76,7 +84,7 @@ const Home = () => {
       {settings?.university_logo && (
         <div className="university-logo-wrapper">
           <img 
-            src={`http://localhost:8000${settings.university_logo}`} 
+            src={resolveMediaUrl(settings.university_logo)}
             alt="University Logo"
             className="university-logo"
           />
@@ -88,7 +96,7 @@ const Home = () => {
         className="hero-section"
         style={{
           backgroundImage: settings?.hero_background 
-            ? `linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%), url(http://localhost:8000${settings.hero_background})`
+            ? `linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%), url(${resolveMediaUrl(settings.hero_background)})`
             : undefined,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
@@ -98,7 +106,7 @@ const Home = () => {
           {settings?.club_logo && (
             <div className="hero-logo">
               <img 
-                src={`http://localhost:8000${settings.club_logo}`} 
+                src={resolveMediaUrl(settings.club_logo)}
                 alt={settings.club_name}
                 className="club-logo-img"
               />
@@ -146,11 +154,11 @@ const Home = () => {
                   <div key={`${sponsor.id}-${index}`} className="sponsor-card">
                     <div className="sponsor-logo-wrapper">
                       {sponsor.logo ? (
-                        <img 
-                          src={`http://localhost:8000${sponsor.logo}`} 
-                          alt={sponsor.name}
-                          className="sponsor-logo"
-                        />
+                          <img 
+                            src={resolveMediaUrl(sponsor.logo)}
+                            alt={sponsor.name}
+                            className="sponsor-logo"
+                          />
                       ) : (
                         <div className="sponsor-placeholder">{sponsor.name[0]}</div>
                       )}
@@ -184,13 +192,13 @@ const Home = () => {
       <footer className="home-footer">
         <div className="footer-content">
           <div className="footer-section">
-            {settings?.club_logo && (
-              <img 
-                src={`http://localhost:8000${settings.club_logo}`} 
-                alt={settings.club_name}
-                className="footer-logo"
-              />
-            )}
+              {settings?.club_logo && (
+                <img 
+                  src={resolveMediaUrl(settings.club_logo)}
+                  alt={settings.club_name}
+                  className="footer-logo"
+                />
+              )}
             <h3>{settings?.club_name || 'TARS'}</h3>
             <p>{settings?.club_full_name || 'Technology and Automation Research Society'}</p>
           </div>

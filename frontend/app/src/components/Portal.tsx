@@ -6,6 +6,8 @@ import { api } from '../services/api';
 import type { HealthCheckResponse } from '../services/api';
 import './Portal.css';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 function Portal() {
   const [user, setUser] = useState<User | null>(null);
   const [healthStatus, setHealthStatus] = useState<HealthCheckResponse | null>(null);
@@ -105,10 +107,10 @@ function Portal() {
           <div className="info-card">
             <h3>📊 Quick Links</h3>
             <div className="info-details">
-              <a href="http://localhost:8000/admin/" target="_blank" className="portal-link">
+              <a href={`${API_BASE_URL}/admin/`} target="_blank" className="portal-link">
                 Admin Dashboard →
               </a>
-              <a href="http://localhost:8000/api/health/" target="_blank" className="portal-link">
+              <a href={`${API_BASE_URL}/api/health/`} target="_blank" className="portal-link">
                 API Health Check →
               </a>
             </div>
