@@ -43,8 +43,8 @@ def home_page_data(request):
     social_links = SocialLink.objects.filter(is_active=True)
     
     return Response({
-        'site_settings': SiteSettingsSerializer(site_settings).data if site_settings else None,
-        'sponsors': SponsorSerializer(sponsors, many=True).data,
-        'social_links': SocialLinkSerializer(social_links, many=True).data,
+        'site_settings': SiteSettingsSerializer(site_settings, context={'request': request}).data if site_settings else None,
+        'sponsors': SponsorSerializer(sponsors, many=True, context={'request': request}).data,
+        'social_links': SocialLinkSerializer(social_links, context={'request': request}).data,
     })
 
