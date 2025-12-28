@@ -31,11 +31,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     // Check if user is already logged in
-    const storedUser = authService.getUser();
-    if (storedUser && authService.isAuthenticated()) {
-      setUser(storedUser);
-    }
-    setLoading(false);
+    const checkAuth = async () => {
+      try {
+        const storedUser = await authService.getUser();
+        const isAuth = await authService.isAuthenticated();
+        if (storedUser && isAuth) {
+          setUser(storedUser);
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkAuth();
   }, []);
 
   const login = async (username: string, password: string) => {

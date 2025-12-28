@@ -1,3 +1,5 @@
+import { Preferences } from '@capacitor/preferences';
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export interface LoginCredentials {
@@ -27,39 +29,42 @@ export interface LoginResponse {
 
 // Token management
 export const authService = {
-  // Store tokens in localStorage
-  setTokens(tokens: AuthTokens) {
-    localStorage.setItem('access_token', tokens.access);
-    localStorage.setItem('refresh_token', tokens.refresh);
+  // Store tokens using Capacitor Preferences for persistent storage
+  async setTokens(tokens: AuthTokens) {
+    await Preferences.set({ key: 'access_token', value: tokens.access });
+    await Preferences.set({ key: 'refresh_token', value: tokens.refresh });
   },
 
-  getAccessToken(): string | null {
-    return localStorage.getItem('access_token');
+  async getAccessToken(): Promise<string | null> {
+    const { value } = await Preferences.get({ key: 'access_token' });
+    return value;
   },
 
-  getRefreshToken(): string | null {
-    return localStorage.getItem('refresh_token');
+  async getRefreshToken(): Promise<string | null> {
+    const { value } = await Preferences.get({ key: 'refresh_token' });
+    return value;
   },
 
-  clearTokens() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user');
+  async clearTokens() {
+    await Preferences.remove({ key: 'access_token' });
+    await Preferences.remove({ key: 'refresh_token' });
+    await Preferences.remove({ key: 'user' });
   },
 
   // Store user info
-  setUser(user: User) {
-    localStorage.setItem('user', JSON.stringify(user));
+  async setUser(user: User) {
+    await Preferences.set({ key: 'user', value: JSON.stringify(user) });
   },
 
-  getUser(): User | null {
-    const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+  async getUser(): Promise<User | null> {
+    const { value } = await Preferences.get({ key: 'user' });
+    return value ? JSON.parse(value) : null;
   },
 
   // Check if user is authenticated
-  isAuthenticated(): boolean {
-    return !!this.getAccessToken();
+  async isAuthenticated(): Promise<boolean> {
+    const token = await this.getAccessToken();
+    return !!token;
   },
 
   // Login
@@ -90,17 +95,18 @@ export const authService = {
 
   // Logout
   async logout(): Promise<void> {
-    const refreshToken = this.getRefreshToken();
+    const refreshToken = await this.getRefreshToken();
     
     if (refreshToken) {
       try {
+        const accessToken = await this.getAccessToken();
         await fetch(`${API_BASE_URL}/api/auth/logout/`, {
           method: 'POST',
           mode: 'cors',
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.getAccessToken()}`,
+            'Authorization': `Bearer ${accessToken}`,
           },
           body: JSON.stringify({ refresh_token: refreshToken }),
         });
@@ -109,12 +115,12 @@ export const authService = {
       }
     }
 
-    this.clearTokens();
+    await this.clearTokens();
   },
 
   // Refresh access token
   async refreshToken(): Promise<string> {
-    const refreshToken = this.getRefreshToken();
+    const refreshToken = await this.getRefreshToken();
     
     if (!refreshToken) {
       throw new Error('No refresh token available');
@@ -131,23 +137,24 @@ export const authService = {
     });
 
     if (!response.ok) {
-      this.clearTokens();
+      await this.clearTokens();
       throw new Error('Token refresh failed');
     }
 
     const data = await response.json();
-    localStorage.setItem('access_token', data.access);
+    await Preferences.set({ key: 'access_token', value: data.access });
     
     return data.access;
   },
 
   // Get user profile
   async getProfile(): Promise<User> {
+    const token = await this.getAccessToken();
     const response = await fetch(`${API_BASE_URL}/api/auth/profile/`, {
       mode: 'cors',
       credentials: 'include',
       headers: {
-        'Authorization': `Bearer ${this.getAccessToken()}`,
+        'Authorization': `Bearer ${token}`,
       },
     });
 
@@ -160,7 +167,7 @@ export const authService = {
 
   // Make authenticated request
   async fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
-    const token = this.getAccessToken();
+    const token = await this.getAccessToken();
     
     if (!token) {
       throw new Error('No access token available');
@@ -191,7 +198,7 @@ export const authService = {
           },
         });
       } catch (error) {
-        this.clearTokens();
+        await this.clearTokens();
         window.location.href = '/login';
         throw error;
       }

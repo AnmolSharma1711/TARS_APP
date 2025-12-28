@@ -38,7 +38,7 @@ function Portal() {
 
   const loadUserData = async () => {
     try {
-      const userData = authService.getUser();
+      const userData = await authService.getUser();
       setUser(userData);
     } catch (error) {
       console.error('Failed to load user:', error);
@@ -48,7 +48,7 @@ function Portal() {
 
   const loadPortalData = async () => {
     try {
-      const token = localStorage.getItem('access_token');
+      const token = await authService.getAccessToken();
       if (!token) {
         console.log('No token found, redirecting to login');
         navigate('/login');
@@ -110,7 +110,7 @@ function Portal() {
   const handleDownload = async (resourceId: number, downloadUrl: string) => {
     try {
       console.log('Download clicked for resource:', resourceId);
-      const token = localStorage.getItem('access_token');
+      const token = await authService.getAccessToken();
       if (token) {
         console.log('Incrementing download count...');
         // Increment download count
