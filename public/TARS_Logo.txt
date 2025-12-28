@@ -1,0 +1,1 @@
+TARS Logo placeholder - Please add your actual TARS_Logo.jpeg to /Users/akshatgupta111/Desktop/TARS/frontend/app/public/
