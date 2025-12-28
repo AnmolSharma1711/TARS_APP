@@ -179,9 +179,6 @@ function Portal() {
         <section className="portal-section">
           <div className="section-header">
             <h2>📚 Available Classes</h2>
-            <p className="section-subtitle">
-              {classes.length} {classes.length === 1 ? 'class' : 'classes'} available
-            </p>
           </div>
 
           {classes.length === 0 ? (
@@ -190,7 +187,18 @@ function Portal() {
               <p className="text-muted">Check back later for new workshops and training sessions!</p>
             </div>
           ) : (
-            <FocusCards cards={classes.map((classItem) => ({
+            <FocusCards cards={classes
+              .filter((classItem) => {
+                // Show all classes except those completed more than 12 hours ago
+                if (classItem.status_display === 'Completed' && classItem.end_date) {
+                  const endDate = new Date(classItem.end_date);
+                  const now = new Date();
+                  const hoursDiff = (now.getTime() - endDate.getTime()) / (1000 * 60 * 60);
+                  return hoursDiff < 12;
+                }
+                return true;
+              })
+              .map((classItem) => ({
               title: classItem.title,
               src: resolveMediaUrl(classItem.thumbnail) || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800',
               description: classItem.description,
@@ -231,7 +239,7 @@ function Portal() {
               ),
               actions: (
                 <>
-                  {classItem.meeting_link && (
+                  {classItem.meeting_link && classItem.is_joinable ? (
                     <a 
                       href={classItem.meeting_link}
                       target="_blank"
@@ -240,7 +248,15 @@ function Portal() {
                     >
                       Join Class
                     </a>
-                  )}
+                  ) : classItem.meeting_link ? (
+                    <button 
+                      disabled
+                      className="btn btn-primary"
+                      title={classItem.status_display === 'Upcoming' ? 'Class has not started yet' : 'Class has ended'}
+                    >
+                      Join Class
+                    </button>
+                  ) : null}
                   {classItem.syllabus && (
                     <a 
                       href={resolveMediaUrl(classItem.syllabus)}
@@ -261,9 +277,6 @@ function Portal() {
         <section className="portal-section">
           <div className="section-header">
             <h2>📖 Learning Resources</h2>
-            <p className="section-subtitle">
-              {resources.length} {resources.length === 1 ? 'resource' : 'resources'} available
-            </p>
           </div>
 
           {resources.length === 0 ? (

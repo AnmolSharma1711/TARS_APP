@@ -410,6 +410,20 @@
   box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
 }
 
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #95a5a6 !important;
+  color: white !important;
+  border-color: #95a5a6 !important;
+  transform: none !important;
+}
+
+.btn:disabled:hover {
+  box-shadow: none !important;
+  transform: none !important;
+}
+
 @media (max-width: 768px) {
   .portal-navbar {
     flex-direction: column;

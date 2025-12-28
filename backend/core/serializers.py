@@ -32,10 +32,11 @@ class SocialLinkSerializer(serializers.ModelSerializer):
 
 class ClassSerializer(serializers.ModelSerializer):
     difficulty_display = serializers.CharField(source='get_difficulty_display', read_only=True)
-    status_display = serializers.CharField(source='get_status_display', read_only=True)
+    status_display = serializers.SerializerMethodField()
     mode = serializers.ReadOnlyField()
     mode_display = serializers.ReadOnlyField()
     is_full = serializers.ReadOnlyField()
+    is_joinable = serializers.ReadOnlyField()
     start_date_formatted = serializers.SerializerMethodField()
     
     class Meta:
@@ -43,13 +44,32 @@ class ClassSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'description', 'instructor', 'difficulty', 'difficulty_display',
             'status', 'status_display', 'mode', 'mode_display', 'thumbnail', 'start_date', 'start_date_formatted',
-            'end_date', 'duration', 'max_participants', 'enrolled_count', 'is_full',
+            'end_date', 'duration', 'max_participants', 'enrolled_count', 'is_full', 'is_joinable',
             'meeting_link', 'location', 'syllabus', 'is_active', 'order',
             'created_at', 'updated_at'
         ]
     
+    def get_status_display(self, obj):
+        """Return computed status display based on time"""
+        return obj.computed_status_display
+    
     def get_start_date_formatted(self, obj):
-        return obj.start_date.strftime('%B %d, %Y at %I:%M %p')
+        """Format start date in IST timezone"""
+        from django.utils import timezone
+        from zoneinfo import ZoneInfo
+        
+        start_date = obj.start_date
+        
+        # If naive datetime, make it aware
+        if start_date.tzinfo is None:
+            start_date = timezone.make_aware(start_date)
+        
+        # Convert to IST timezone
+        ist = ZoneInfo('Asia/Kolkata')
+        start_date_ist = start_date.astimezone(ist)
+        
+        # Format: "December 28, 2025 at 02:30 PM"
+        return start_date_ist.strftime('%B %d, %Y at %I:%M %p')
 
 
 class ResourceSerializer(serializers.ModelSerializer):

@@ -138,6 +138,100 @@ class Class(models.Model):
         return self.enrolled_count >= self.max_participants
     
     @property
+    def computed_status(self):
+        """
+        Compute status based on dates and time.
+        If status is explicitly set to 'archived', return that.
+        Otherwise, determine from current time and dates.
+        """
+        from django.utils import timezone
+        
+        # If explicitly archived, return archived
+        if self.status == 'archived':
+            return 'archived'
+        
+        # Get current time in UTC
+        now = timezone.now()
+        
+        # Ensure start_date is timezone-aware
+        start_date = self.start_date
+        if start_date.tzinfo is None:
+            start_date = timezone.make_aware(start_date)
+        
+        # Check if class hasn't started yet
+        if now < start_date:
+            return 'upcoming'
+        
+        # Check if class is ongoing
+        if self.end_date:
+            end_date = self.end_date
+            if end_date.tzinfo is None:
+                end_date = timezone.make_aware(end_date)
+            
+            if now <= end_date:
+                return 'ongoing'
+            else:
+                return 'completed'
+        else:
+            # If no end_date, consider it ongoing if it has started
+            return 'ongoing'
+    
+    @property
+    def computed_status_display(self):
+        """Get display name for computed status"""
+        status_map = {
+            'upcoming': 'Upcoming',
+            'ongoing': 'Ongoing',
+            'completed': 'Completed',
+            'archived': 'Archived',
+        }
+        return status_map.get(self.computed_status, 'Unknown')
+    
+    @property
+    def is_joinable(self):
+        """
+        Check if class is joinable.
+        Can join if:
+        - Class has started (now >= start_date)
+        - Class hasn't ended (if end_date exists, now <= end_date)
+        - Class is not explicitly archived
+        - Class is active
+        """
+        from django.utils import timezone
+        
+        # Cannot join if explicitly archived
+        if self.status == 'archived':
+            return False
+        
+        # Cannot join if class is inactive
+        if not self.is_active:
+            return False
+        
+        # Get current time in UTC
+        now = timezone.now()
+        
+        # Ensure start_date is timezone-aware
+        start_date = self.start_date
+        if start_date.tzinfo is None:
+            start_date = timezone.make_aware(start_date)
+        
+        # Class must have started
+        if now < start_date:
+            return False
+        
+        # If end_date exists, class must not have ended
+        if self.end_date:
+            end_date = self.end_date
+            if end_date.tzinfo is None:
+                end_date = timezone.make_aware(end_date)
+            
+            if now > end_date:
+                return False
+        
+        # All checks passed - user can join
+        return True
+    
+    @property
     def mode(self):
         """Determine class mode based on meeting_link and location"""
         has_online = bool(self.meeting_link)

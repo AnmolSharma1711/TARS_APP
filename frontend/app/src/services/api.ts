@@ -36,6 +36,7 @@ export interface ClassData {
   max_participants: number;
   enrolled_count: number;
   is_full: boolean;
+  is_joinable: boolean;
   meeting_link?: string;
   location?: string;
   syllabus?: string;
