@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { api } from '../services/api'
 import { ShootingStars } from './ui/shooting-stars'
 import { StarsBackground } from './ui/stars-background'
@@ -51,12 +52,19 @@ interface HomePageData {
 
 const Home = () => {
   const navigate = useNavigate()
+  const { isAuthenticated, loading: authLoading } = useAuth()
   const [homeData, setHomeData] = useState<HomePageData | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // If session already restored, go straight to portal
+    if (!authLoading && isAuthenticated) {
+      navigate('/portal', { replace: true })
+      return
+    }
+
     fetchHomeData()
-  }, [])
+  }, [authLoading, isAuthenticated, navigate])
 
   const fetchHomeData = async () => {
     try {
