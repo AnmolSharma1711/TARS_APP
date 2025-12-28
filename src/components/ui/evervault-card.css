@@ -1,0 +1,85 @@
+.evervault-card-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-pattern-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.card-pattern-background {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.card-pattern-overlay {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.card-pattern-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  word-break: break-all;
+  font-size: 10px;
+  line-height: 12px;
+  color: rgba(255, 255, 255, 0.05);
+  font-family: monospace;
+  user-select: none;
+  pointer-events: none;
+  white-space: pre-wrap;
+  overflow: hidden;
+}
+
+.card-pattern-text-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  word-break: break-all;
+  font-size: 10px;
+  line-height: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: monospace;
+  user-select: none;
+  pointer-events: none;
+  white-space: pre-wrap;
+  overflow: hidden;
+}
+
+.evervault-card-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+}
+
+.evervault-card-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+}
