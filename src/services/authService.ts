@@ -87,8 +87,8 @@ export const authService = {
     const data: LoginResponse = await response.json();
     
     // Store tokens and user info
-    this.setTokens(data.tokens);
-    this.setUser(data.user);
+    await this.setTokens(data.tokens);
+    await this.setUser(data.user);
 
     return data;
   },
