@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../services/authService';
+import { useAuth } from '../context/AuthContext';
 import { ShootingStars } from './ui/shooting-stars';
 import { StarsBackground } from './ui/stars-background';
 import './Login.css';
@@ -12,6 +12,7 @@ function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -19,7 +20,7 @@ function Login() {
     setLoading(true);
 
     try {
-      await authService.login({ username, password });
+      await login(username, password);
       navigate('/portal');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed. Please check your credentials.');
