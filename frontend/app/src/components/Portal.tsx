@@ -6,7 +6,6 @@ import { api, type ClassData, type ResourceData } from '../services/api';
 import { ShootingStars } from './ui/shooting-stars';
 import { StarsBackground } from './ui/stars-background';
 import { FocusCards } from './ui/focus-cards';
-import type { Card } from './ui/focus-cards';
 import './Portal.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';

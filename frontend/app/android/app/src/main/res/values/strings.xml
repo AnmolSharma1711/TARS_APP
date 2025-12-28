@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TARS</string>
+    <string name="title_activity_main">TARS</string>
+    <string name="package_name">com.tars.app</string>
+    <string name="custom_url_scheme">com.tars.app</string>
+</resources>
