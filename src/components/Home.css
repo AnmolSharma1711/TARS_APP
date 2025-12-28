@@ -407,6 +407,16 @@
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .hero-section {
+    padding: 1.5rem;
+  }
+  
+  .sponsor-card {
+    flex: 0 0 300px;
+  }
+}
+
 @media (max-width: 768px) {
   .university-logo-wrapper {
     top: 1rem;
@@ -419,28 +429,98 @@
     max-height: 60px;
   }
 
+  .hero-section {
+    padding: 1rem;
+    min-height: 90vh;
+  }
+
   .hero-title {
-    font-size: 3rem;
+    font-size: 2.5rem;
+    line-height: 1.2;
   }
   
   .hero-subtitle {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   
   .hero-motto {
-    font-size: 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .hero-logo {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1.5rem;
   }
   
   .btn {
-    padding: 0.8rem 2rem;
-    font-size: 1rem;
+    padding: 0.75rem 1.75rem;
+    font-size: 0.95rem;
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .section-header h2 {
+    font-size: 1.75rem;
   }
   
   .sponsor-card {
-    flex: 0 0 280px;
+    flex: 0 0 250px;
   }
   
   .footer-content {
     grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .footer-section {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .university-logo-wrapper {
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.4rem;
+  }
+  
+  .university-logo {
+    max-width: 60px;
+    max-height: 45px;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .hero-motto {
+    font-size: 0.85rem;
+  }
+  
+  .hero-logo {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .btn {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .section-header {
+    padding: 1.5rem 1rem;
+  }
+  
+  .section-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .sponsor-card {
+    flex: 0 0 220px;
   }
 }
